@@ -8,7 +8,6 @@ substack.net
 
 * smtp
 * imap
-* pop3 (defunct)
 
 ---
 
@@ -251,6 +250,8 @@ leveldb inside a leveldb
 
 associate each blob hash with a mailbox address and time stamp
 
+---
+
 # smtp-protocol with blob storage and leveldb
 
 ``` js
@@ -273,6 +274,8 @@ var server = smtp.createServer(function (req) {
 });
 server.listen(5025);
 ```
+
+---
 
 # smtp-protocol with blob storage and leveldb
 
@@ -310,42 +313,81 @@ server.listen(5025);
 
 ---
 
+# modularize!
+
+``` js
+var smtp = require('smtp-protocol');
+var maildb = require('maildb');
+
+var db = require('level')('./db');
+var mbox = maildb(db, { dir: './blobs' });
+
+var server = smtp.createServer(function (req) {
+    req.on('message', function (stream, ack) {
+        console.log('from: ' + req.from);
+        console.log('to: ' + req.to);
+        
+        stream.pipe(mail.save(req.from, req.to));
+        ack.accept();
+    });
+});
+server.listen(5025);
+```
+
+---
+
 # imap
 
-bad ideas:
+horrors
 
-* fallback to plaintext
-* integer sequences
+---
 
+# imap
 
-# leveldb!
+most of the super tricky indexing encapsulated into maildb
 
-custom databases
+---
 
-# secure blob storage
+# secure blob storage!
 
-use rsa public keys for one-way encryption to disk
+fallback for when not using gpg
 
-threat model: seizing disks
-
-weakness:
-
-* disk access at hosting provider level, get private keys from disk and run MITM
-with the certs
-
-best:
-
-* both sides using gpg
-
-# content-addressable-blob-store
+---
 
 # rsa-stream
 
+asymmetric crypto
+
+n/8-11 bits max
+
+---
+
 # hybrid-rsa-stream
+
+asymmetrically encrypt a random key,
+
+followed by a symmetric cipher
+
+safe for > n/8-11 bits
+
+---
 
 # rsa-blob-store
 
-# rsa-email-store
+wrap content-addressable-blob-store
+  with hybrid-rsa-stream
 
-some hacks to get around how stupid imap is
+---
+
+# eelmail!
+
+* eelmail
+* maildb
+* level
+* content-addressable-blob-store
+* bytewise
+* smtp-protocol
+* imap-parser
+* rsa-stream
+* hybrid-rsa-stream
 
