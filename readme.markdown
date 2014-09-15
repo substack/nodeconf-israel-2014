@@ -152,7 +152,7 @@ var server = smtp.createServer(function (req) {
         console.log('from: ' + req.from);
         console.log('to: ' + req.to);
         
-        // we can use a content-addressable blob store here
+        // we can use a content-addressable blob store here!
         
         ack.accept();
     });
@@ -161,6 +161,25 @@ server.listen(5025);
 ```
 
 ---
+
+``` js
+var smtp = require('smtp-protocol');
+var blob = require('content-addressable-blob-store');
+var store = blob({ path: './blobs' });
+
+var server = smtp.createServer(function (req) {
+    req.on('message', function (stream, ack) {
+        console.log('from: ' + req.from);
+        console.log('to: ' + req.to);
+        
+        var w = store.createWriteStream();
+        stream.pipe(w);
+        
+        ack.accept();
+    });
+});
+server.listen(5025);
+```
 
 ## imap
 
