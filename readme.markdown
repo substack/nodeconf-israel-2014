@@ -2,6 +2,8 @@
 
 substack.net
 
+2014-09-15 Tel Aviv
+
 ---
 
 # how email works
