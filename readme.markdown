@@ -142,7 +142,7 @@ w.on('finish', function () {
 
 ---
 
-# smtp-protocol
+# smtp-protocol with blob storage
 
 ``` js
 var smtp = require('smtp-protocol');
@@ -162,6 +162,8 @@ server.listen(5025);
 
 ---
 
+# smtp-protocol with blob storage
+
 ``` js
 var smtp = require('smtp-protocol');
 var blob = require('content-addressable-blob-store');
@@ -180,6 +182,70 @@ var server = smtp.createServer(function (req) {
 });
 server.listen(5025);
 ```
+
+---
+
+# leveldb
+
+``` js
+var level = require('level');
+```
+
+---
+
+# leveldb
+
+``` js
+var level = require('level');
+var db = level('/tmp/blah');
+```
+
+---
+
+# leveldb
+
+* db.get()
+* db.put()
+* db.del()
+* db.batch()
+* db.createReadStream()
+
+---
+
+# bytewise
+
+* null
+* false
+* true
+* Number (numeric)
+* Date (numeric, epoch offset)
+* Buffer (bitwise)
+* String (lexicographic)
+* Set (componentwise with elements sorted)
+* Array (componentwise)
+* Object (componentwise string-keyed key/value pairs)
+* Map (componentwise key/value pairs)
+* RegExp (stringified lexicographic)
+* Function (stringified lexicographic)
+* undefined
+
+---
+
+# bytewise
+
+* null
+* Number (numeric)
+* String (lexicographic)
+* Array (componentwise)
+* undefined
+
+---
+
+# leveldb to store email!
+
+associate each blob hash with a mailbox address and time stamp
+
+---
 
 ## imap
 

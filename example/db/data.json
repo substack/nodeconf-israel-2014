@@ -1,0 +1,8 @@
+[
+{"type":"put","key":"user!substack","value":{"bio":"beep boop"}},
+{"type":"put","key":"user!dominic","value":{"bio":"mad science"}},
+{"type":"put","key":"user!julian","value":{"bio":"señor Computerist"}},
+{"type":"put","key":"post!substack!1410772607310","value":{"message":"yo"}},
+{"type":"put","key":"post!substack!1410772602310","value":{"message":"hmm"}},
+{"type":"put","key":"post!dominic!1410772402360","value":{"message":"silver jumpsuit"}}
+]
