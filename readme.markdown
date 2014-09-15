@@ -241,23 +241,82 @@ var db = level('/tmp/blah');
 
 ---
 
+# sublevel
+
+leveldb inside a leveldb
+
+---
+
 # leveldb to store email!
 
 associate each blob hash with a mailbox address and time stamp
 
+# smtp-protocol with blob storage and leveldb
+
+``` js
+var smtp = require('smtp-protocol');
+var blob = require('content-addressable-blob-store');
+var store = blob({ path: './blobs' });
+
+var server = smtp.createServer(function (req) {
+    req.on('message', function (stream, ack) {
+        console.log('from: ' + req.from);
+        console.log('to: ' + req.to);
+        
+        var w = store.createWriteStream();
+        stream.pipe(w);
+        
+        // we can index the hash here
+        
+        ack.accept();
+    });
+});
+server.listen(5025);
+```
+
+# smtp-protocol with blob storage and leveldb
+
+``` js
+var smtp = require('smtp-protocol');
+var blob = require('content-addressable-blob-store');
+var store = blob({ path: './blobs' });
+
+var db = require('level')('./db', {
+    keyEncoding: require('bytewise'),
+    valueEncoding: 'json'
+});
+
+var server = smtp.createServer(function (req) {
+    req.on('message', function (stream, ack) {
+        console.log('from: ' + req.from);
+        console.log('to: ' + req.to);
+        
+        var w = store.createWriteStream();
+        stream.pipe(w);
+        
+        w.on('finish', function () {
+            req.to.forEach(function (to) {
+                db.put([ 'email', to, Date.now() ], {
+                    from: req.from,
+                    hash: w.key
+                });
+            });
+        });
+        ack.accept();
+    });
+});
+server.listen(5025);
+```
+
 ---
 
-## imap
+# imap
 
 bad ideas:
 
 * fallback to plaintext
 * integer sequences
 
-# a better email
-
-* tls only
-* secure blob storage
 
 # leveldb!
 
